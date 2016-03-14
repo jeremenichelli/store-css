@@ -1,6 +1,6 @@
 {
   "name": "store-css",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Script that loads stylesheets asynchronously and stores them for future visits",
   "main": "index.js",
   "scripts": {
