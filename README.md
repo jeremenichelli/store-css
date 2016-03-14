@@ -73,7 +73,9 @@ store.css('/assets/styles.css', {
 
 ### crossOrigin
 
-You might need to load a stylesheet from a different domain. When this happens CSS rules aren't reachable through JavaScript. Some modern browsers support a `crossorigin` attribute for link tags that gives access to them. If that's your case you need to add this option so styles can be stored.
+You might need to load a stylesheet from a different domain. When this happens CSS rules aren't reachable through JavaScript. Some modern browsers support a `crossorigin` attribute for link tags that gives access to them.
+
+If that's your case you need to add this option so styles can be stored.
 
 ```js
 store.css('/assets/styles.css', {
