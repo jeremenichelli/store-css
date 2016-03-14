@@ -45,7 +45,7 @@
                 _log(this.href, 'stylesheet loaded asynchronously');
 
                 try {
-                    var rules = this.sheet.cssRules || this.sheet.rules,
+                    var rules = this.sheet ? this.sheet.cssRules : this.styleSheet.rules,
                         len = rules.length,
                         ssContent = '';
 
