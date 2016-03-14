@@ -1,0 +1,42 @@
+body {
+    background-color: #fefefe;
+    color: #404040;
+    font-family: 'Source Sans Pro', Helvetica Neue, sans-serif;
+    font-size: 20px;
+    font-weight: 300;
+}
+
+header, section {
+    max-width: 725px;
+    margin: 0 auto;
+    padding: 45px;
+}
+
+header {
+    border-color: #e91e63;
+    border-style: solid;
+    border-width: 0 0 1px;
+}
+
+h1 {
+    font-weight: 400;
+    font-size: 2em;
+    line-height: 1em;
+    margin: 0;
+}
+
+span {
+    color: #e91e63;
+    font-weight: 700;
+}
+
+p {
+    font-size: 1em;
+    font-style: italic;
+    line-height: 1.5em;
+    margin: 0;
+}
+
+p + p {
+    margin: 35px 0 0;
+}

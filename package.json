@@ -1,0 +1,31 @@
+{
+  "name": "store-css",
+  "version": "0.2.0",
+  "description": "Script that loads stylesheets asynchronously and stores them for future visits",
+  "main": "index.js",
+  "scripts": {
+    "test": "eslint src/**/*.js",
+    "prebuild": "npm test",
+    "build": "ncp src/store-css.js index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremenichelli/store-css.git"
+  },
+  "keywords": [
+    "css",
+    "async",
+    "store"
+  ],
+  "author": "Jeremias Menichelli",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jeremenichelli/store-css/issues"
+  },
+  "homepage": "https://github.com/jeremenichelli/store-css#readme",
+  "devDependencies": {
+    "eslint": "^2.4.0",
+    "ncp": "^2.0.0",
+    "uglify-js": "^2.6.2"
+  }
+}
