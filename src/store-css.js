@@ -36,11 +36,6 @@
 
         _log(this.href, 'stylesheet loaded asynchronously');
 
-        // call success function when styles are ready
-        if (typeof config.success === 'function') {
-            config.success();
-        }
-
         try {
             var rules = this.sheet ? this.sheet.cssRules : this.styleSheet.rules,
                 len = rules.length,
@@ -105,11 +100,6 @@
             ref.parentNode.insertBefore(s, ref);
 
             _log(href, 'stylesheet loaded from ' + config.storage + 'Storage');
-
-            // call success function when styles are ready
-            if (typeof config.success === 'function') {
-                config.success();
-            }
         } else {
             /*
              * Filament Group approach to prevent stylesheet to block rendering
