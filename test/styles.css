@@ -1,9 +1,12 @@
 body {
     background-color: #fefefe;
     color: #404040;
-    font-family: 'Source Sans Pro', Helvetica Neue, sans-serif;
     font-size: 20px;
     font-weight: 300;
+}
+
+.fonts-loaded body {
+    font-family: 'Source Sans Pro', Helvetica Neue, sans-serif;
 }
 
 header, section {
