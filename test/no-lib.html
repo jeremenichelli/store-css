@@ -20,30 +20,35 @@ h)(b=f!=g&&f!=h&&g!=h)||(null===C&&(b=/AppleWebKit\/([0-9]+)(?:\.([0-9]+))/.exec
 h=p.a.offsetWidth,q();G=setTimeout(F,50)}}var e=new w(m),n=new w(m),p=new w(m),f=-1,g=-1,h=-1,r=-1,t=-1,u=-1,d=document.createElement("div"),G=0;d.dir="ltr";y(e,J(c,"sans-serif"));y(n,J(c,"serif"));y(p,J(c,"monospace"));d.appendChild(e.a);d.appendChild(n.a);d.appendChild(p.a);document.body.appendChild(d);r=e.a.offsetWidth;t=n.a.offsetWidth;u=p.a.offsetWidth;F();A(e,function(a){f=a;q()});y(e,J(c,'"'+c.family+'",sans-serif'));A(n,function(a){g=a;q()});y(n,J(c,'"'+c.family+'",serif'));A(p,function(a){h=
 a;q()});y(p,J(c,'"'+c.family+'",monospace'))})})};window.FontFaceObserver=B;window.FontFaceObserver.prototype.check=window.FontFaceObserver.prototype.load=B.prototype.load;"undefined"!==typeof module&&(module.exports=window.FontFaceObserver);}());
 
-        // font loading strategy
-        var w300 = new FontFaceObserver('Source Sans Pro', {
-                weight: 300
-            }),
-            w300i = new FontFaceObserver('Source Sans Pro', {
-                weight: 300,
-                style: 'italic'
-            }),
-            w400 = new FontFaceObserver('Source Sans Pro', {
-                weight: 400
-            }),
-            w700 = new FontFaceObserver('Source Sans Pro', {
-                weight: 700
-            });
+        if (sessionStorage.getItem('fonts-loaded')) {
+            document.documentElement.classList.add('fonts-loaded');
+        } else {
+            // font loading strategy
+            var w300 = new FontFaceObserver('Source Sans Pro', {
+                    weight: 300
+                }),
+                w300i = new FontFaceObserver('Source Sans Pro', {
+                    weight: 300,
+                    style: 'italic'
+                }),
+                w400 = new FontFaceObserver('Source Sans Pro', {
+                    weight: 400
+                }),
+                w700 = new FontFaceObserver('Source Sans Pro', {
+                    weight: 700
+                });
 
-        Promise.all([
-                w300.load(),
-                w300i.load(),
-                w400.load(),
-                w700.load()
-            ])
-            .then(function() {
-                document.documentElement.classList.add('fonts-loaded');
-            });
+            Promise.all([
+                    w300.load(),
+                    w300i.load(),
+                    w400.load(),
+                    w700.load()
+                ])
+                .then(function() {
+                    sessionStorage.setItem('fonts-loaded', true);
+                    document.documentElement.classList.add('fonts-loaded');
+                });
+        }
     </script>
 </head>
 <body>

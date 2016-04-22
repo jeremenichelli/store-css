@@ -42,30 +42,35 @@ f),d(c,"stylesheet loaded from "+a.storage+"Storage")):(b.media="only x",a.cross
             storage: 'session'
         });
 
-        // font loading strategy
-        var w300 = new FontFaceObserver('Source Sans Pro', {
-                weight: 300
-            }),
-            w300i = new FontFaceObserver('Source Sans Pro', {
-                weight: 300,
-                style: 'italic'
-            }),
-            w400 = new FontFaceObserver('Source Sans Pro', {
-                weight: 400
-            }),
-            w700 = new FontFaceObserver('Source Sans Pro', {
-                weight: 700
-            });
+        if (sessionStorage.getItem('fonts-loaded')) {
+            document.documentElement.classList.add('fonts-loaded');
+        } else {
+            // font loading strategy
+            var w300 = new FontFaceObserver('Source Sans Pro', {
+                    weight: 300
+                }),
+                w300i = new FontFaceObserver('Source Sans Pro', {
+                    weight: 300,
+                    style: 'italic'
+                }),
+                w400 = new FontFaceObserver('Source Sans Pro', {
+                    weight: 400
+                }),
+                w700 = new FontFaceObserver('Source Sans Pro', {
+                    weight: 700
+                });
 
-        Promise.all([
-                w300.load(),
-                w300i.load(),
-                w400.load(),
-                w700.load()
-            ])
-            .then(function() {
-                document.documentElement.classList.add('fonts-loaded');
-            });
+            Promise.all([
+                    w300.load(),
+                    w300i.load(),
+                    w400.load(),
+                    w700.load()
+                ])
+                .then(function() {
+                    sessionStorage.setItem('fonts-loaded', true);
+                    document.documentElement.classList.add('fonts-loaded');
+                });
+        }
     </script>
 </head>
 <body>
