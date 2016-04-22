@@ -2,12 +2,12 @@
     'use strict';
     if (typeof define === 'function' && define.amd) {
         define(function() {
-            return factory(root);
+            return factory();
         });
     } else if (typeof exports === 'object') {
-        module.exports = factory;
+        module.exports = factory();
     } else {
-        root.store = factory(root);
+        root.store = factory();
     }
 })(this, function() {
     'use strict';
@@ -20,8 +20,8 @@
      * @method _log
      */
     function _log() {
-        if (verbose) {
-            console.log.apply(window.console, arguments);
+        if (verbose && console) {
+            console.log.apply(console, arguments);
         }
     }
 
