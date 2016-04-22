@@ -33,20 +33,6 @@ f),d(c,"stylesheet loaded from "+a.storage+"Storage")):(b.media="only x",a.cross
         // usage
         store.verbose();
 
-        store.css('https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css', {
-            crossOrigin: 'anonymous',
-            storage: 'local'
-        });
-
-        store.css('styles.css', {
-            storage: 'session'
-        });
-
-        store.css('mobile-styles.css', {
-            storage: 'session',
-            media: '(max-width: 640px)'
-        });
-
         store.css('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,300,300italic', {
             crossOrigin: 'anonymous',
             storage: 'session'
@@ -81,6 +67,20 @@ f),d(c,"stylesheet loaded from "+a.storage+"Storage")):(b.media="only x",a.cross
                     document.documentElement.classList.add('fonts-loaded');
                 });
         }
+
+        store.css('https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css', {
+            crossOrigin: 'anonymous',
+            storage: 'local'
+        });
+
+        store.css('styles.css', {
+            storage: 'session'
+        });
+
+        store.css('mobile-styles.css', {
+            storage: 'session',
+            media: '(max-width: 640px)'
+        });
     </script>
 </head>
 <body>
