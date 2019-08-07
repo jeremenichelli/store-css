@@ -20,7 +20,6 @@ function _onload(config) {
   this.media = config.media ? config.media : 'all'
 
   _log(this.href, 'stylesheet loaded asynchronously')
-
   try {
     var rules = this.sheet ? this.sheet.cssRules : this.styleSheet.rules,
       len = rules.length,
