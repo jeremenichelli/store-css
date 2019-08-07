@@ -1,64 +1,50 @@
-let verbose = false
+const noop = () => {}
 
-/*
- * Logs message only if verbose is enabled
- * @method _log
- */
-function _log() {
-  if (verbose && console) {
-    console.log.apply(console, arguments)
-  }
-}
-
-/*
+/**
  * Method that is called when a stylesheet is loaded
- * @method _onload
- * @params {Object} config
+ * @method __onload__
+ * @param {Object} config
  */
-function _onload(config) {
+function __onload__(config) {
+  const logger = config.logger ? config.logger : noop
   this.onload = null
   this.media = config.media ? config.media : 'all'
 
-  _log(this.href, 'stylesheet loaded asynchronously')
-  try {
-    var rules = this.sheet ? this.sheet.cssRules : this.styleSheet.rules,
-      len = rules.length,
-      ssContent = ''
+  logger(null, `${this.href} loaded asynchronously`)
 
-    for (var i = 0; i < len; i++) {
-      ssContent += rules[i].cssText
-    }
+  if (config.storage) {
+    try {
+      const rules = this.sheet ? this.sheet.cssRules : this.styleSheet.rules
+      let styles = rules.reduce((acc, rule) => {
+        return (acc += rule.cssText)
+      }, '')
 
-    // wrap rules with @media statement if necessary
-    if (config.media) {
-      ssContent = '@media ' + config.media + '{' + ssContent + '}'
-    }
+      // wrap rules with @media statement if necessary
+      if (config.media) styles = '@media ' + config.media + '{' + styles + '}'
 
-    // if storage option is present, save for later visits
-    if (config.storage) {
-      window[config.storage + 'Storage'].setItem(this.href, ssContent)
+      // if storage option is present, save for later visits
+      window[config.storage + 'Storage'].setItem(this.href, styles)
+    } catch (e) {
+      logger(e, 'Stylesheet could not be saved for future visits')
     }
-  } catch (e) {
-    _log('Stylesheet could not be saved for future visits', e)
   }
 }
 
-/*
+/**
  * Loads stylesheet asynchronously or retrieves it from web storage
- * @method _storeCSS
- * @params {String} href
- * @params {Object} options
+ * @method css
+ * @param {Object} config
  */
-function storeCSS(href, options) {
-  var script = document.getElementsByTagName('script')[0]
-  var l = document.createElement('link'),
-    config = typeof options === 'undefined' ? {} : options,
-    ref = config.ref ? config.ref : script,
-    stored = null
+function css(config = {}) {
+  const script = document.getElementsByTagName('script')[0]
+  const ref = config.ref ? config.ref : script
+  const logger = config.logger ? config.logger : noop
+  const link = document.createElement('link')
+  let stored
 
   // create link element to extract correct href path
-  l.rel = 'stylesheet'
-  l.href = href
+  link.rel = 'stylesheet'
+  link.href = config.url
 
   /*
    * Detect stored stylesheet content only when storage option is present
@@ -66,11 +52,11 @@ function storeCSS(href, options) {
    */
   if (config.storage) {
     try {
-      stored = window[config.storage + 'Storage'].getItem(l.href)
-    } catch (e) {
-      _log(
-        'Stylesheet could not be retrieved from ' + config.storage + 'Storage',
-        e
+      stored = window[`${config.storage}Storage`].getItem(link.href)
+    } catch (error) {
+      logger(
+        error,
+        `${link.href} could not be retrieved from ${config.storage}Storage`
       )
     }
   }
@@ -80,49 +66,34 @@ function storeCSS(href, options) {
    * content, else load it using a link tag
    */
   if (stored) {
-    l = null
+    const styleTag = document.createElement('style')
 
-    var s = document.createElement('style')
+    styleTag.textContent = stored
+    ref.parentNode.insertBefore(styleTag, ref)
 
-    s.textContent = stored
-    ref.parentNode.insertBefore(s, ref)
-
-    _log(href, 'stylesheet loaded from ' + config.storage + 'Storage')
+    logger(null, `${link.href} retrieved from ${config.storage}Storage`)
   } else {
     /*
      * Filament Group approach to prevent stylesheet to block rendering
      * https://github.com/filamentgroup/loadCSS/blob/master/src/loadCSS.js#L26
      */
-    l.media = 'only x'
+    link.media = 'only x'
 
     /*
      * Add crossOrigin attribute for external stylesheets, take in count this
      * attribute is not widely supported. In those cases CSS rules will not be
      * saved in web storage but stylesheet will be loaded
      */
-    if (config.crossOrigin) {
-      l.crossOrigin = config.crossOrigin
-    }
+    if (config.crossOrigin) link.crossOrigin = config.crossOrigin
 
-    l.onload = _onload.bind(l, config)
+    link.onload = __onload__.bind(link, config)
 
     /*
      * Node insert approach taken from Paul Irish's 'Surefire DOM Element Insertion'
      * http://www.paulirish.com/2011/surefire-dom-element-insertion/
      */
-    ref.parentNode.insertBefore(l, ref)
+    ref.parentNode.insertBefore(link, ref)
   }
 }
 
-/*
- * Turn on console logs
- * @method enableVerbose
- */
-function enableVerbose() {
-  verbose = true
-}
-
-export default {
-  css: storeCSS,
-  verbose: enableVerbose
-}
+export default { css }
