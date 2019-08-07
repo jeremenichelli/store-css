@@ -1,7 +1,7 @@
 const noop = () => {}
 
 /**
- * Method that is called when a stylesheet is loaded
+ * Method called when a stylesheet is loaded
  * @method __onload__
  * @param {Object} config
  */
@@ -22,7 +22,7 @@ function __onload__(config) {
       // wrap rules with @media statement if necessary
       if (config.media) styles = '@media ' + config.media + '{' + styles + '}'
 
-      // if storage option is present, save for later visits
+      // save on web storage
       window[config.storage + 'Storage'].setItem(this.href, styles)
     } catch (e) {
       logger(e, 'Stylesheet could not be saved for future visits')
@@ -63,7 +63,7 @@ function css(config = {}) {
 
   /*
    * if stylesheet is in web storage inject a style tag with its
-   * content, else load it using a link tag
+   * content, else load it using the link tag
    */
   if (stored) {
     const styleTag = document.createElement('style')
