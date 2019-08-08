@@ -1,4 +1,4 @@
-import store from '.'
+import { css } from '.'
 import test from 'ava'
 import sinon from 'sinon'
 import clone from 'lodash.clonedeep'
@@ -69,7 +69,7 @@ test.afterEach(() => {
 
 test('loads stylesheet', (t) => {
   const url = 'https://path.to/stylesheet.css'
-  store.css({ url })
+  css({ url })
 
   // assigned link properties correctly
   t.is(ELEMENTS.link.href, url)
@@ -94,7 +94,7 @@ test('loads stylesheet', (t) => {
 test('accepts media in config object', (t) => {
   const url = 'https://path.to/stylesheet.css'
   const media = '(max-width: 739px'
-  store.css({ url, media })
+  css({ url, media })
 
   ELEMENTS.link.onload()
   t.is(ELEMENTS.link.media, media)
@@ -103,7 +103,7 @@ test('accepts media in config object', (t) => {
 test('accepts cross origin attribute', (t) => {
   const url = 'https://path.to/stylesheet.css'
   const crossOrigin = 'anonymous'
-  store.css({ url, crossOrigin })
+  css({ url, crossOrigin })
 
   t.is(ELEMENTS.link.crossOrigin, crossOrigin)
 })
@@ -111,7 +111,7 @@ test('accepts cross origin attribute', (t) => {
 test('accepts a reference element for link injection', (t) => {
   const url = 'https://path.to/stylesheet.css'
   const ref = { parentNode: { insertBefore: sinon.spy() } }
-  store.css({ url, ref })
+  css({ url, ref })
 
   t.is(ref.parentNode.insertBefore.getCall(0).args[0], ELEMENTS.link)
   t.is(ref.parentNode.insertBefore.getCall(0).args[1], ref)
@@ -120,7 +120,7 @@ test('accepts a reference element for link injection', (t) => {
 test('stores result in localStorage', (t) => {
   const url = 'https://path.to/stylesheet.css'
   const storage = 'local'
-  store.css({ url, storage })
+  css({ url, storage })
 
   // styles gets to local storage
   ELEMENTS.link.onload()
@@ -132,7 +132,7 @@ test('stores result in localStorage', (t) => {
 test('stores result in sessionStorage', (t) => {
   const url = 'https://path.to/stylesheet.css'
   const storage = 'session'
-  store.css({ url, storage })
+  css({ url, storage })
 
   // styles gets to session storage
   ELEMENTS.link.onload()
@@ -146,7 +146,7 @@ test('retrieves already saved styles from localStorage', (t) => {
   const storage = 'local'
   const styles = `${firstRule}${secondRule}`
   window.localStorage[url] = styles
-  store.css({ url, storage })
+  css({ url, storage })
 
   t.is(window.localStorage.getItem.getCall(0).args[0], url)
   t.is(ELEMENTS.style.textContent, styles)
@@ -157,7 +157,7 @@ test('retrieves already saved styles from sessionStorage', (t) => {
   const storage = 'session'
   const styles = `${firstRule}${secondRule}`
   window.sessionStorage[url] = styles
-  store.css({ url, storage })
+  css({ url, storage })
 
   t.is(window.sessionStorage.getItem.getCall(0).args[0], url)
   t.is(ELEMENTS.style.textContent, styles)
@@ -168,7 +168,7 @@ test('wraps styles in media when storing', (t) => {
   const media = '(max-width: 739px)'
   const storage = 'session'
   const styles = `${firstRule}${secondRule}`
-  store.css({ url, media, storage })
+  css({ url, media, storage })
 
   ELEMENTS.link.onload()
   t.is(
@@ -181,7 +181,7 @@ test('accepts logger method', (t) => {
   const url = 'https://path.to/stylesheet.css'
   const storage = 'session'
   const logger = sinon.spy()
-  store.css({ url, storage, logger })
+  css({ url, storage, logger })
 
   ELEMENTS.link.onload()
   t.is(logger.getCall(0).args[0], null)
