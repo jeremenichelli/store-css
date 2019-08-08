@@ -19,9 +19,10 @@ function __onload__(media, storage, logger) {
   if (storage) {
     try {
       const rules = this.sheet ? this.sheet.cssRules : this.styleSheet.rules
-      let styles = rules.reduce((acc, rule) => {
-        return (acc += rule.cssText)
-      }, '')
+      let styles = ''
+      for (var i = 0, len = rules.length; i < len; i++) {
+        styles += rules[i].cssText
+      }
 
       // wrap rules with @media statement if necessary
       if (media) styles = `@media ${media} {${styles}}`
