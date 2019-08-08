@@ -4,7 +4,7 @@
 
 🎒 Load stylesheets asynchronously and store them in web storage.
 
-You can try it out in this test page <a href="https://jeremenichelli.github.io/store-css/test">https://jeremenichelli.github.io/store-css/test</a>. First open a new tab and your development tools, go to the **Network** tab and enter the url, then reload the page to see how many requests are saved. You can also checkout the console to see what's going on.
+_Loads your styles without block rendering your site, and retrieves the result from web storage on future visits. Backwards compatibility with old browsers, safe implementation in case web storage fails, avoids flash of unstyled content and it can be inlined in the head of your project since it's less than 1KB in size._
 
 ## Install
 
