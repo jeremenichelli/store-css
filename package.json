@@ -1,21 +1,32 @@
 {
   "name": "store-css",
-  "version": "0.3.0",
-  "description": "Script that loads stylesheets asynchronously and stores them for future visits",
-  "main": "index.js",
+  "version": "0.0.0",
+  "description": "Load stylesheets asynchronously and store them in web storage",
+  "main": "dist/store-css.js",
+  "browser": "dist/store-css.umd.js",
+  "module": "dist/store-css.esm.js",
   "scripts": {
-    "test": "eslint src/**/*.js",
+    "format": "prettier ./**/*.js --write",
+    "test": "ava --verbose --serial",
     "prebuild": "npm test",
-    "build": "ncp src/store-css.js index.js"
+    "start": "microbundle watch -i ./src/index.js --name=storecss",
+    "build": "microbundle -i ./src/index.js --name=storecss --external none",
+    "release": "travis-deploy-once 'semantic-release'"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jeremenichelli/store-css.git"
   },
   "keywords": [
-    "css",
-    "async",
-    "store"
+    "store-css",
+    "critical css",
+    "styles",
+    "storage"
   ],
   "author": "Jeremias Menichelli",
   "license": "MIT",
@@ -24,8 +35,39 @@
   },
   "homepage": "https://github.com/jeremenichelli/store-css#readme",
   "devDependencies": {
-    "eslint": "^2.4.0",
-    "ncp": "^2.0.0",
-    "uglify-js": "^2.6.2"
+    "@commitlint/cli": "^7.6.1",
+    "@commitlint/config-conventional": "^7.6.0",
+    "ava": "^2.0.0",
+    "esm": "^3.2.25",
+    "husky": "^2.3.0",
+    "lint-staged": "^8.1.7",
+    "lodash.clonedeep": "^4.5.0",
+    "microbundle": "^0.11.0",
+    "prettier": "^1.17.1",
+    "semantic-release": "^15.9.9",
+    "sinon": "^7.4.1",
+    "travis-deploy-once": "^5.0.3"
+  },
+  "ava": {
+    "require": [
+      "esm"
+    ]
+  },
+  "lint-staged": {
+    "./**/*.js": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && yarn test",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   }
 }

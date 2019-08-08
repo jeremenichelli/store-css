@@ -1,113 +1,141 @@
 # store-css
 
-Script that loads stylesheets asynchronously and stores them for future visits.
+[![Build Status](https://travis-ci.org/jeremenichelli/store-css.svg)](https://travis-ci.org/jeremenichelli/store-css)
+
+🎒 Load stylesheets asynchronously and store them in web storage.
 
 You can try it out in this test page <a href="https://jeremenichelli.github.io/store-css/test">https://jeremenichelli.github.io/store-css/test</a>. First open a new tab and your development tools, go to the **Network** tab and enter the url, then reload the page to see how many requests are saved. You can also checkout the console to see what's going on.
 
-
 ## Install
 
-Download and include the `index.js` file or install through **npm**.
-
 ```sh
-npm install store-css --save
+# npm
+npm i store-css --save
+
+# yarn
+yarn add store-css
 ```
 
-## How it works
+Or include it as a script with `//unpkg.com/huntjs/dist/store-css.umd.js` as source.
 
-The script loads a stylesheet asynchronously passing its url as a first argument and later a configuration object that will allow you to store it.
+## Usage
 
-When the `store.css()` method is called it will first create a `<link>` tag to load the styles correctly, but after the stylesheet is loaded all the rules will be gathered and saved in the web storage and next time the user comes a `<style>` tag will be inserted in the **head** of the site containing all the CSS rules from it instead of doing a network request!
+Import the `css` method and pass the `url` where your stylesheet is located.
 
 ```js
-var store = require('store-css');
+import { css } from 'store-css'
 
-store.css('/assets/styles.css');
+const url = '//path.to/my/styles.css'
+css({ url })
 ```
 
-If you don't pass any option the script will not store the stylesheet it will just load it on every visit.
+The package will unsure the stylesheet is loaded without render blocking the page.
 
+But the magic happens when you use the `storage` option.
 
-### storage
+### `storage`
 
-To actually do some magic with it, you need a `storage` option and pass `'session'` or `'local'` as values. In the first case, the CSS rules present in the stylesheet will be stored using `sessionStorage` so they will be retrieved during the navigation but will be lost when the user closes the browser tab. In the second one `localStorage` will be use and styles will persist for future visits.
+When you pass a `storage`, the script will save the content of the stylesheet in web storage. In future visits the styles will be retrieved from there instead of making a network call! 
 
 ```js
-store.css('/assets/styles.css', {
-    storage: 'session'
-});
+import { css } from 'store-css'
+
+const url = '//path.to/my/styles.css'
+const storage = 'session'
+css({ url, storage })
 ```
 
-What happens if the browser doesn't support web storage or the user is navigating in private mode? In this case, the script will just load the stylesheet every time the page is visited. The user won't get the benefit from loading the CSS rules faster, but your page will still work and not block the rendering process.
+`storage` option can be both `'session'` or `'local'`.
 
-_**Suggestion:** Build the script that loads your stylesheets, minify it and insert it inside a script tag in the **head** of your site. You will prevent Flash of Unstyled Content and your page will load super fast._
+What happens if the web storage space is full? What happens if a browser has a buggy web storage implementation? No worries, the script will fallback to normally loading a `link` element. It **always** works.
 
-_**NOTE:** Beware that the script won't detect updates on your stylesheet, that's why I personally recommend to use the `session` value to speed up navigation through your site, but loadthe styles on each visit._
+This is great to avoid _flicks_ unstyled content in repeated views, and as the script is really small it's a really good option for head inlining in static sites.
 
+### `crossOrigin`
 
-### media
-
-`<link>` tags support a `media` attribute containing a query to hit special end points in the viewport. You can pass this as an option to alter the reach of the styles you're loading.
+If you are calling a stylesheet from a different origin you will need this.
 
 ```js
-store.css('/assets/styles.css', {
-    media: '(max-width: 769px)',
-    storage: 'session'
-});
+import { css } from 'store-css'
+
+const url = '//external.source.to/my/styles.css'
+const storage = 'session'
+const crossOrigin = 'anonymous'
+css({ url, storage, crossOrigin })
 ```
 
-When the styles are retrieved via web storage they will be wrapped inside a `@media` statement to maintain coherence.
+_Make sure to test which string or identifier works better for the provider._
 
+### `media`
 
-### ref
-
-As you might know the order of the CSS rules is important, so in case you need the stylesheet to load before a certain element present in the document you can specify it using the `ref` option.
+If you want styles to be aplied for a specific `media` environment, pass the query as an option.
 
 ```js
-store.css('/assets/styles.css', {
-    ref: document.getElementsByTagName('script')[0],
-    storage: 'session'
-});
+import { css } from 'store-css'
+
+const url = '//path.to/my/styles.css'
+const storage = 'session'
+const media = '(max-width: 739px)'
+css({ url, storage, media })
 ```
 
+_On the first round the media attribute will be passed to the `link` element, on future visits the stylesheet content will be wrapped before injecting a `style` tag._
 
-### crossOrigin
+### `ref`
 
-You might need to load a stylesheet from a different domain. When this happens CSS rules aren't reachable through JavaScript. Some modern browsers support a `crossorigin` attribute for link tags that gives access to them.
-
-If that's your case you need to add this option so styles can be stored.
+By default the styles will be injected before the first `script` present in the page, but you can change this if you need some specific position for them to not affect the cascade effect of the styles.
 
 ```js
-store.css('/assets/styles.css', {
-    crossOrigin: 'anonymous',
-    storage: 'session'
-});
+import { css } from 'store-css'
+
+const url = '//path.to/my/styles.css'
+const storage = 'session'
+const ref = document.getElementById('#main-styles')
+css({ url, storage, ref })
 ```
 
-_**NOTE:** When this attribute is not supported by the browser the script won't be able to store the rules for later application. What's good is that your page will still load the stylesheet and look as expected!_
+Styles will be place **before** the `ref` element.
 
+### `logger`
 
-### store.verbose()
+If you need to debug the package behavior you can pass a `logger` method. This function will receive an error as a first argument and a message as a second one.
 
-If you need to know what's happening with your styles you can call `store.verbose()` before using this library. Open the console in your browser and you will see notifications when your styles are loaded, from where and if there was an issue with some feature.
+```js
+import { css } from 'store-css'
 
+const url = '//path.to/my/styles.css'
+const storage = 'session'
+const logger = console.log
+css({ url, storage, logger })
+```
+
+This approach is really good for both custom logic on logging and to avoid unnecessary code in production.
+
+```js
+import { css } from 'store-css'
+
+const url = '//path.to/my/styles.css'
+const storage = 'session'
+const config = { url, storage }
+
+if (process.env.NODE_ENV ==! 'production') {
+  config.logger = (error, message) => {
+    if (error) console.error(message, error)
+    else console.log(message)
+  }
+}
+
+css(config)
+```
+
+In production the logger method won't be added and code will be eliminated by minifiers.
 
 ## Browser support
 
-This script was tested in the latest versions of Chrome, Firefox, Safari, Microsoft Edge, and legacy browsers like Internet Explorer 9 and 10. Though errors weren't present in legacy browsers, extensive testing is in need to check edge cases for this approach, so consider this experimental.
+This package works all the way from modern browsers to Internet Explorer 9.
 
+## Contributing
 
-## Contribution
+To contribute [Node.js](//nodejs.org) and [yarn](//yarnpkg.com) are required.
 
-If you're planning or have used this library feel free to contact me and tell about how it was.
-
-Also feel free to open an issue or suggest something through a pull request.
-
-
-## References
-
-To understand better how this approach works you should read about:
-
-- The `<link>` element: https://developer.mozilla.org/en/docs/Web/HTML/Element/link
-- and Web Storage API: https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API
-
+Before commit make sure to follow [conventional commits](//www.conventionalcommits.org) specification and check all tests pass by running `yarn test`.
