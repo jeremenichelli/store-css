@@ -1,7 +1,7 @@
 {
   "name": "store-css",
   "version": "0.0.0",
-  "description": "Load stylesheets asynchronously and store them in local and session storage",
+  "description": "Load stylesheets asynchronously and store them in web storage",
   "main": "dist/store-css.js",
   "browser": "dist/store-css.umd.js",
   "module": "dist/store-css.esm.js",

@@ -173,7 +173,7 @@ test('wraps styles in media when storing', (t) => {
   ELEMENTS.link.onload()
   t.is(
     window.sessionStorage.setItem.getCall(0).args[1],
-    `@media ${media}{${styles}}`
+    `@media ${media} {${styles}}`
   )
 })
 

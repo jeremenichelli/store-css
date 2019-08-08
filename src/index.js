@@ -1,3 +1,8 @@
+/**
+ * Fallback function
+ * @method noop
+ * @returns {undefined}
+ */
 const noop = () => {}
 
 /**
@@ -5,14 +10,13 @@ const noop = () => {}
  * @method __onload__
  * @param {Object} config
  */
-function __onload__(config) {
-  const logger = config.logger ? config.logger : noop
+function __onload__(media, storage, logger) {
   this.onload = null
-  this.media = config.media ? config.media : 'all'
+  this.media = media || 'all'
 
   logger(null, `${this.href} loaded asynchronously`)
 
-  if (config.storage) {
+  if (storage) {
     try {
       const rules = this.sheet ? this.sheet.cssRules : this.styleSheet.rules
       let styles = rules.reduce((acc, rule) => {
@@ -20,10 +24,10 @@ function __onload__(config) {
       }, '')
 
       // wrap rules with @media statement if necessary
-      if (config.media) styles = '@media ' + config.media + '{' + styles + '}'
+      if (media) styles = `@media ${media} {${styles}}`
 
       // save on web storage
-      window[config.storage + 'Storage'].setItem(this.href, styles)
+      window[`${storage}Storage`].setItem(this.href, styles)
     } catch (e) {
       logger(e, 'Stylesheet could not be saved for future visits')
     }
@@ -37,10 +41,11 @@ function __onload__(config) {
  */
 function css(config = {}) {
   const script = document.getElementsByTagName('script')[0]
-  const ref = config.ref ? config.ref : script
-  const logger = config.logger ? config.logger : noop
+  const ref = config.ref || script
+  const logger = config.logger || noop
   const link = document.createElement('link')
-  let stored
+  let storedStyles
+  let el
 
   // create link element to extract correct href path
   link.rel = 'stylesheet'
@@ -52,7 +57,7 @@ function css(config = {}) {
    */
   if (config.storage) {
     try {
-      stored = window[`${config.storage}Storage`].getItem(link.href)
+      storedStyles = window[`${config.storage}Storage`].getItem(link.href)
     } catch (error) {
       logger(
         error,
@@ -65,11 +70,10 @@ function css(config = {}) {
    * if stylesheet is in web storage inject a style tag with its
    * content, else load it using the link tag
    */
-  if (stored) {
-    const styleTag = document.createElement('style')
+  if (storedStyles) {
+    el = document.createElement('style')
 
-    styleTag.textContent = stored
-    ref.parentNode.insertBefore(styleTag, ref)
+    el.textContent = storedStyles
 
     logger(null, `${link.href} retrieved from ${config.storage}Storage`)
   } else {
@@ -86,14 +90,15 @@ function css(config = {}) {
      */
     if (config.crossOrigin) link.crossOrigin = config.crossOrigin
 
-    link.onload = __onload__.bind(link, config)
-
-    /*
-     * Node insert approach taken from Paul Irish's 'Surefire DOM Element Insertion'
-     * http://www.paulirish.com/2011/surefire-dom-element-insertion/
-     */
-    ref.parentNode.insertBefore(link, ref)
+    link.onload = __onload__.bind(link, config.media, config.storage, logger)
+    el = link
   }
+
+  /*
+   * Node insert approach taken from Paul Irish's 'Surefire DOM Element Insertion'
+   * http://www.paulirish.com/2011/surefire-dom-element-insertion/
+   */
+  ref.parentNode.insertBefore(el, ref)
 }
 
 export default { css }
