@@ -45,7 +45,7 @@ const storage = 'session'
 css({ url, storage })
 ```
 
-`storage` option can be both `'session'` or `'local'`.
+👉 `storage` option can be both `'session'` or `'local'`
 
 What happens if the web storage space is full? What happens if a browser has a buggy web storage implementation? No worries, the script will fallback to normally loading a `link` element. It **always** works.
 
@@ -64,7 +64,7 @@ const crossOrigin = 'anonymous'
 css({ url, storage, crossOrigin })
 ```
 
-_Make sure to test which string or identifier works better for the provider._
+🌎 Make sure to test which string or identifier works better for the provider
 
 ### `media`
 
