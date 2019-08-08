@@ -4,7 +4,7 @@
 
 🎒 Load stylesheets asynchronously and store them in web storage.
 
-You can try it out in this test page <a href="https://jeremenichelli.github.io/store-css/test">https://jeremenichelli.github.io/store-css/test</a>. First open a new tab and your development tools, go to the **Network** tab and enter the url, then reload the page to see how many requests are saved. You can also checkout the console to see what's going on.
+_Loads your styles without block rendering your site, and retrieves the result from web storage on future visits. Backwards compatibility with old browsers, safe implementation in case web storage fails, avoids flash of unstyled content and it can be inlined in the head of your project since it's less than 1KB in size._
 
 ## Install
 
@@ -45,7 +45,7 @@ const storage = 'session'
 css({ url, storage })
 ```
 
-`storage` option can be both `'session'` or `'local'`.
+👉 `storage` option can be both `'session'` or `'local'`
 
 What happens if the web storage space is full? What happens if a browser has a buggy web storage implementation? No worries, the script will fallback to normally loading a `link` element. It **always** works.
 
@@ -64,7 +64,7 @@ const crossOrigin = 'anonymous'
 css({ url, storage, crossOrigin })
 ```
 
-_Make sure to test which string or identifier works better for the provider._
+🌎 Make sure to test which string or identifier works better for the provider
 
 ### `media`
 
