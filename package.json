@@ -7,7 +7,7 @@
   "module": "dist/store-css.esm.js",
   "scripts": {
     "format": "prettier ./**/*.js --write",
-    "test": "ava --verbose --serial",
+    "test": "ava --verbose",
     "prebuild": "npm test",
     "start": "microbundle watch -i ./src/index.js --name=storecss",
     "build": "microbundle -i ./src/index.js --name=storecss --external none",

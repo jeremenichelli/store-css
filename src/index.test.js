@@ -1,5 +1,5 @@
 import { css } from '.'
-import test from 'ava'
+import { serial as test } from 'ava'
 import sinon from 'sinon'
 import clone from 'lodash.clonedeep'
 
