@@ -16,7 +16,7 @@ npm i store-css --save
 yarn add store-css
 ```
 
-Or include it as a script with `//unpkg.com/huntjs/dist/store-css.umd.js` as source.
+Or include it as a script with `//unpkg.com/store-css/dist/store-css.umd.js` as source.
 
 ## Usage
 
